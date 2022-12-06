@@ -1,0 +1,49 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+option go_package = ".;proto";
+
+service User {
+  rpc UserRegister(UserInfoRegister) returns(google.protobuf.Empty);
+  rpc UserLogin(UserInfoLogin) returns(UserInfo);
+  rpc UserResetPassword(UserInfoResetPassword) returns (UserInfo);
+  rpc UserPurview(UserInfo) returns (google.protobuf.Empty);
+  rpc UserCheckPassword(UserInfoCheckPassword) returns (UserInfoCheckResponse);
+}
+message UserInfoRegister {
+  uint32 id = 1;
+  string name = 2;
+  string password = 3;
+  uint32 mobile = 4;
+  uint32 position = 5; // 职位 1 代表未激活 职位 2 代表 运营  职位3 代理管理 0代表封禁
+}
+
+
+message UserInfoCheckResponse {
+  bool success = 1;
+}
+
+message UserInfoCheckPassword {
+  string Password = 1;
+  string EncryptedPassword = 2;
+}
+
+message UserInfoResetPassword {
+  uint32 id = 1;
+  string name = 2;
+  string mobile = 3;
+  string NewPassword = 4;
+}
+
+
+message UserInfo {
+  uint32 id = 1;
+  string name = 2;
+  uint32 mobile = 3;
+  uint32 position = 4; // 职位 1 代表未激活 职位 2 代表 运营  职位3 代理管理 0代表封禁
+}
+
+message UserInfoLogin {
+  string name = 1;
+  string mobile = 2;
+  string password = 3;
+}
