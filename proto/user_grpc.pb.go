@@ -24,7 +24,6 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
 	UserRegister(ctx context.Context, in *UserInfoRegister, opts ...grpc.CallOption) (*empty.Empty, error)
-	UserLogin(ctx context.Context, in *UserInfoLogin, opts ...grpc.CallOption) (*UserInfo, error)
 	UserResetPassword(ctx context.Context, in *UserInfoResetPassword, opts ...grpc.CallOption) (*UserInfo, error)
 	UserPurview(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*empty.Empty, error)
 	UserCheckPassword(ctx context.Context, in *UserInfoCheckPassword, opts ...grpc.CallOption) (*UserInfoCheckResponse, error)
@@ -41,15 +40,6 @@ func NewUserClient(cc grpc.ClientConnInterface) UserClient {
 func (c *userClient) UserRegister(ctx context.Context, in *UserInfoRegister, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/User/UserRegister", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userClient) UserLogin(ctx context.Context, in *UserInfoLogin, opts ...grpc.CallOption) (*UserInfo, error) {
-	out := new(UserInfo)
-	err := c.cc.Invoke(ctx, "/User/UserLogin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +78,6 @@ func (c *userClient) UserCheckPassword(ctx context.Context, in *UserInfoCheckPas
 // for forward compatibility
 type UserServer interface {
 	UserRegister(context.Context, *UserInfoRegister) (*empty.Empty, error)
-	UserLogin(context.Context, *UserInfoLogin) (*UserInfo, error)
 	UserResetPassword(context.Context, *UserInfoResetPassword) (*UserInfo, error)
 	UserPurview(context.Context, *UserInfo) (*empty.Empty, error)
 	UserCheckPassword(context.Context, *UserInfoCheckPassword) (*UserInfoCheckResponse, error)
@@ -101,9 +90,6 @@ type UnimplementedUserServer struct {
 
 func (UnimplementedUserServer) UserRegister(context.Context, *UserInfoRegister) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserRegister not implemented")
-}
-func (UnimplementedUserServer) UserLogin(context.Context, *UserInfoLogin) (*UserInfo, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserLogin not implemented")
 }
 func (UnimplementedUserServer) UserResetPassword(context.Context, *UserInfoResetPassword) (*UserInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserResetPassword not implemented")
@@ -141,24 +127,6 @@ func _User_UserRegister_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).UserRegister(ctx, req.(*UserInfoRegister))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _User_UserLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserInfoLogin)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).UserLogin(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/User/UserLogin",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserLogin(ctx, req.(*UserInfoLogin))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -227,10 +195,6 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserRegister",
 			Handler:    _User_UserRegister_Handler,
-		},
-		{
-			MethodName: "UserLogin",
-			Handler:    _User_UserLogin_Handler,
 		},
 		{
 			MethodName: "UserResetPassword",

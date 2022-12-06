@@ -4,7 +4,6 @@ option go_package = ".;proto";
 
 service User {
   rpc UserRegister(UserInfoRegister) returns(google.protobuf.Empty);
-  rpc UserLogin(UserInfoLogin) returns(UserInfo);
   rpc UserResetPassword(UserInfoResetPassword) returns (UserInfo);
   rpc UserPurview(UserInfo) returns (google.protobuf.Empty);
   rpc UserCheckPassword(UserInfoCheckPassword) returns (UserInfoCheckResponse);
