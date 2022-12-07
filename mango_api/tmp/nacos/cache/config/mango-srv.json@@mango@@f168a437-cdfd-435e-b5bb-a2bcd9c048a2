@@ -7,7 +7,7 @@
         "port": 3306,
         "user": "root",
         "password": "tang5230",
-        "db": "mango_goods_srv"
+        "db": "mango"
     },
     "consul" :{
         "host":"192.168.2.100",

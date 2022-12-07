@@ -3,19 +3,39 @@ import "google/protobuf/empty.proto";
 option go_package = ".;proto";
 
 service User {
-  rpc UserRegister(UserInfoRegister) returns(google.protobuf.Empty);
-  rpc UserResetPassword(UserInfoResetPassword) returns (UserInfo);
-  rpc UserPurview(UserInfo) returns (google.protobuf.Empty);
-  rpc UserCheckPassword(UserInfoCheckPassword) returns (UserInfoCheckResponse);
+  rpc UserRegister(UserInfoRegister) returns(google.protobuf.Empty); // 注册
+  rpc UserResetPassword(UserInfoResetPassword) returns (UserInfo); // 重置密码
+  rpc UserPurview(UserInfoPurview) returns (google.protobuf.Empty); // 权限管理
+  rpc UserCheckPassword(UserInfoCheckPassword) returns (UserInfoCheckResponse); // 验证密码
+  rpc UserByID(UserInfoByID) returns(UserInfo); // 通过ID查询
+  rpc UserByName(UserInfoByName) returns (UserInfo); // 通过名字查询
+  rpc UserByMobile(UserInfoByMobile) returns (UserInfo); // 通过手机号查询
 }
+
+message UserInfoByMobile {
+  string mobile = 1;
+}
+
+message UserInfoByName {
+  string name = 1;
+}
+
+message UserInfoByID {
+  uint32 id = 1;
+}
+
 message UserInfoRegister {
   uint32 id = 1;
   string name = 2;
   string password = 3;
-  uint32 mobile = 4;
+  string mobile = 4;
   uint32 position = 5; // 职位 1 代表未激活 职位 2 代表 运营  职位3 代理管理 0代表封禁
 }
 
+message UserInfoPurview {
+  uint32 id = 1;
+  uint32 position = 4; // 职位 1 代表未激活 职位 2 代表 运营  职位3 代理管理 0代表封禁
+}
 
 message UserInfoCheckResponse {
   bool success = 1;
@@ -28,8 +48,6 @@ message UserInfoCheckPassword {
 
 message UserInfoResetPassword {
   uint32 id = 1;
-  string name = 2;
-  string mobile = 3;
   string NewPassword = 4;
 }
 
@@ -37,8 +55,9 @@ message UserInfoResetPassword {
 message UserInfo {
   uint32 id = 1;
   string name = 2;
-  uint32 mobile = 3;
-  uint32 position = 4; // 职位 1 代表未激活 职位 2 代表 运营  职位3 代理管理 0代表封禁
+  string mobile = 3;
+  string password = 4;
+  uint32 position = 5; // 职位 1 代表未激活 职位 2 代表 运营  职位3 代理管理 0代表封禁
 }
 
 message UserInfoLogin {

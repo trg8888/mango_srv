@@ -5,3 +5,17 @@
 2022-12-05T16:30:48.475+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
 2022-12-05T16:47:53.130+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
 2022-12-05T16:57:32.701+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-06T14:55:49.480+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T10:52:14.038+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T10:52:52.710+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T11:25:33.875+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T14:18:48.959+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T14:20:23.067+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T14:44:30.869+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T14:47:46.226+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T14:49:26.480+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T15:04:46.581+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T15:07:23.399+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T15:54:57.582+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T16:06:45.317+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>
+2022-12-07T16:32:18.006+0800	[34mINFO[0m	clients/client_factory.go:47	logDir:<mango_api/tmp/nacos/log>   cacheDir:<mango_api/tmp/nacos/cache>

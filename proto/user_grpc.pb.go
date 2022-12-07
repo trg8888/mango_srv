@@ -25,8 +25,11 @@ const _ = grpc.SupportPackageIsVersion7
 type UserClient interface {
 	UserRegister(ctx context.Context, in *UserInfoRegister, opts ...grpc.CallOption) (*empty.Empty, error)
 	UserResetPassword(ctx context.Context, in *UserInfoResetPassword, opts ...grpc.CallOption) (*UserInfo, error)
-	UserPurview(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserPurview(ctx context.Context, in *UserInfoPurview, opts ...grpc.CallOption) (*empty.Empty, error)
 	UserCheckPassword(ctx context.Context, in *UserInfoCheckPassword, opts ...grpc.CallOption) (*UserInfoCheckResponse, error)
+	UserByID(ctx context.Context, in *UserInfoByID, opts ...grpc.CallOption) (*UserInfo, error)
+	UserByName(ctx context.Context, in *UserInfoByName, opts ...grpc.CallOption) (*UserInfo, error)
+	UserByMobile(ctx context.Context, in *UserInfoByMobile, opts ...grpc.CallOption) (*UserInfo, error)
 }
 
 type userClient struct {
@@ -55,7 +58,7 @@ func (c *userClient) UserResetPassword(ctx context.Context, in *UserInfoResetPas
 	return out, nil
 }
 
-func (c *userClient) UserPurview(ctx context.Context, in *UserInfo, opts ...grpc.CallOption) (*empty.Empty, error) {
+func (c *userClient) UserPurview(ctx context.Context, in *UserInfoPurview, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/User/UserPurview", in, out, opts...)
 	if err != nil {
@@ -73,14 +76,44 @@ func (c *userClient) UserCheckPassword(ctx context.Context, in *UserInfoCheckPas
 	return out, nil
 }
 
+func (c *userClient) UserByID(ctx context.Context, in *UserInfoByID, opts ...grpc.CallOption) (*UserInfo, error) {
+	out := new(UserInfo)
+	err := c.cc.Invoke(ctx, "/User/UserByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserByName(ctx context.Context, in *UserInfoByName, opts ...grpc.CallOption) (*UserInfo, error) {
+	out := new(UserInfo)
+	err := c.cc.Invoke(ctx, "/User/UserByName", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserByMobile(ctx context.Context, in *UserInfoByMobile, opts ...grpc.CallOption) (*UserInfo, error) {
+	out := new(UserInfo)
+	err := c.cc.Invoke(ctx, "/User/UserByMobile", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
 	UserRegister(context.Context, *UserInfoRegister) (*empty.Empty, error)
 	UserResetPassword(context.Context, *UserInfoResetPassword) (*UserInfo, error)
-	UserPurview(context.Context, *UserInfo) (*empty.Empty, error)
+	UserPurview(context.Context, *UserInfoPurview) (*empty.Empty, error)
 	UserCheckPassword(context.Context, *UserInfoCheckPassword) (*UserInfoCheckResponse, error)
+	UserByID(context.Context, *UserInfoByID) (*UserInfo, error)
+	UserByName(context.Context, *UserInfoByName) (*UserInfo, error)
+	UserByMobile(context.Context, *UserInfoByMobile) (*UserInfo, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -94,11 +127,20 @@ func (UnimplementedUserServer) UserRegister(context.Context, *UserInfoRegister) 
 func (UnimplementedUserServer) UserResetPassword(context.Context, *UserInfoResetPassword) (*UserInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserResetPassword not implemented")
 }
-func (UnimplementedUserServer) UserPurview(context.Context, *UserInfo) (*empty.Empty, error) {
+func (UnimplementedUserServer) UserPurview(context.Context, *UserInfoPurview) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserPurview not implemented")
 }
 func (UnimplementedUserServer) UserCheckPassword(context.Context, *UserInfoCheckPassword) (*UserInfoCheckResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCheckPassword not implemented")
+}
+func (UnimplementedUserServer) UserByID(context.Context, *UserInfoByID) (*UserInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserByID not implemented")
+}
+func (UnimplementedUserServer) UserByName(context.Context, *UserInfoByName) (*UserInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserByName not implemented")
+}
+func (UnimplementedUserServer) UserByMobile(context.Context, *UserInfoByMobile) (*UserInfo, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserByMobile not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -150,7 +192,7 @@ func _User_UserResetPassword_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _User_UserPurview_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserInfo)
+	in := new(UserInfoPurview)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -162,7 +204,7 @@ func _User_UserPurview_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/User/UserPurview",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserPurview(ctx, req.(*UserInfo))
+		return srv.(UserServer).UserPurview(ctx, req.(*UserInfoPurview))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -181,6 +223,60 @@ func _User_UserCheckPassword_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UserServer).UserCheckPassword(ctx, req.(*UserInfoCheckPassword))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfoByID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserByID(ctx, req.(*UserInfoByID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserByName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfoByName)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserByName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserByName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserByName(ctx, req.(*UserInfoByName))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserByMobile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserInfoByMobile)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserByMobile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserByMobile",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserByMobile(ctx, req.(*UserInfoByMobile))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -207,6 +303,18 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserCheckPassword",
 			Handler:    _User_UserCheckPassword_Handler,
+		},
+		{
+			MethodName: "UserByID",
+			Handler:    _User_UserByID_Handler,
+		},
+		{
+			MethodName: "UserByName",
+			Handler:    _User_UserByName_Handler,
+		},
+		{
+			MethodName: "UserByMobile",
+			Handler:    _User_UserByMobile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
