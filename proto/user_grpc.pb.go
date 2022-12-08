@@ -23,6 +23,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserClient interface {
+	// 用户
 	UserRegister(ctx context.Context, in *UserInfoRegister, opts ...grpc.CallOption) (*empty.Empty, error)
 	UserResetPassword(ctx context.Context, in *UserInfoResetPassword, opts ...grpc.CallOption) (*UserInfo, error)
 	UserPurview(ctx context.Context, in *UserInfoPurview, opts ...grpc.CallOption) (*empty.Empty, error)
@@ -30,6 +31,15 @@ type UserClient interface {
 	UserByID(ctx context.Context, in *UserInfoByID, opts ...grpc.CallOption) (*UserInfo, error)
 	UserByName(ctx context.Context, in *UserInfoByName, opts ...grpc.CallOption) (*UserInfo, error)
 	UserByMobile(ctx context.Context, in *UserInfoByMobile, opts ...grpc.CallOption) (*UserInfo, error)
+	// 业务目录
+	DirectoryRegister(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	DirectoryChange(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	DirectoryList(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*DirectoryListResponse, error)
+	DirectoryDelete(ctx context.Context, in *DirectoryDeleteID, opts ...grpc.CallOption) (*empty.Empty, error)
+	// 目录关联用户
+	UserCraterDirectory(ctx context.Context, in *UserCraterDirectoryID, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserDeleteDirectory(ctx context.Context, in *UserCraterDirectoryID, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserListDirectory(ctx context.Context, in *UserListDirectoryID, opts ...grpc.CallOption) (*DirectoryListResponse, error)
 }
 
 type userClient struct {
@@ -103,10 +113,74 @@ func (c *userClient) UserByMobile(ctx context.Context, in *UserInfoByMobile, opt
 	return out, nil
 }
 
+func (c *userClient) DirectoryRegister(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/DirectoryRegister", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) DirectoryChange(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/DirectoryChange", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) DirectoryList(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*DirectoryListResponse, error) {
+	out := new(DirectoryListResponse)
+	err := c.cc.Invoke(ctx, "/User/DirectoryList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) DirectoryDelete(ctx context.Context, in *DirectoryDeleteID, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/DirectoryDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserCraterDirectory(ctx context.Context, in *UserCraterDirectoryID, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserCraterDirectory", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserDeleteDirectory(ctx context.Context, in *UserCraterDirectoryID, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserDeleteDirectory", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserListDirectory(ctx context.Context, in *UserListDirectoryID, opts ...grpc.CallOption) (*DirectoryListResponse, error) {
+	out := new(DirectoryListResponse)
+	err := c.cc.Invoke(ctx, "/User/UserListDirectory", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
 type UserServer interface {
+	// 用户
 	UserRegister(context.Context, *UserInfoRegister) (*empty.Empty, error)
 	UserResetPassword(context.Context, *UserInfoResetPassword) (*UserInfo, error)
 	UserPurview(context.Context, *UserInfoPurview) (*empty.Empty, error)
@@ -114,6 +188,15 @@ type UserServer interface {
 	UserByID(context.Context, *UserInfoByID) (*UserInfo, error)
 	UserByName(context.Context, *UserInfoByName) (*UserInfo, error)
 	UserByMobile(context.Context, *UserInfoByMobile) (*UserInfo, error)
+	// 业务目录
+	DirectoryRegister(context.Context, *DirectoryInfoRequest) (*empty.Empty, error)
+	DirectoryChange(context.Context, *DirectoryInfoRequest) (*empty.Empty, error)
+	DirectoryList(context.Context, *empty.Empty) (*DirectoryListResponse, error)
+	DirectoryDelete(context.Context, *DirectoryDeleteID) (*empty.Empty, error)
+	// 目录关联用户
+	UserCraterDirectory(context.Context, *UserCraterDirectoryID) (*empty.Empty, error)
+	UserDeleteDirectory(context.Context, *UserCraterDirectoryID) (*empty.Empty, error)
+	UserListDirectory(context.Context, *UserListDirectoryID) (*DirectoryListResponse, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -141,6 +224,27 @@ func (UnimplementedUserServer) UserByName(context.Context, *UserInfoByName) (*Us
 }
 func (UnimplementedUserServer) UserByMobile(context.Context, *UserInfoByMobile) (*UserInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserByMobile not implemented")
+}
+func (UnimplementedUserServer) DirectoryRegister(context.Context, *DirectoryInfoRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectoryRegister not implemented")
+}
+func (UnimplementedUserServer) DirectoryChange(context.Context, *DirectoryInfoRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectoryChange not implemented")
+}
+func (UnimplementedUserServer) DirectoryList(context.Context, *empty.Empty) (*DirectoryListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectoryList not implemented")
+}
+func (UnimplementedUserServer) DirectoryDelete(context.Context, *DirectoryDeleteID) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectoryDelete not implemented")
+}
+func (UnimplementedUserServer) UserCraterDirectory(context.Context, *UserCraterDirectoryID) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCraterDirectory not implemented")
+}
+func (UnimplementedUserServer) UserDeleteDirectory(context.Context, *UserCraterDirectoryID) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeleteDirectory not implemented")
+}
+func (UnimplementedUserServer) UserListDirectory(context.Context, *UserListDirectoryID) (*DirectoryListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserListDirectory not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -281,6 +385,132 @@ func _User_UserByMobile_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_DirectoryRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectoryInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).DirectoryRegister(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/DirectoryRegister",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).DirectoryRegister(ctx, req.(*DirectoryInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_DirectoryChange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectoryInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).DirectoryChange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/DirectoryChange",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).DirectoryChange(ctx, req.(*DirectoryInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_DirectoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).DirectoryList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/DirectoryList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).DirectoryList(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_DirectoryDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectoryDeleteID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).DirectoryDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/DirectoryDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).DirectoryDelete(ctx, req.(*DirectoryDeleteID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserCraterDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserCraterDirectoryID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserCraterDirectory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserCraterDirectory",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserCraterDirectory(ctx, req.(*UserCraterDirectoryID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserDeleteDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserCraterDirectoryID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserDeleteDirectory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserDeleteDirectory",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserDeleteDirectory(ctx, req.(*UserCraterDirectoryID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserListDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserListDirectoryID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserListDirectory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserListDirectory",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserListDirectory(ctx, req.(*UserListDirectoryID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -315,6 +545,34 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserByMobile",
 			Handler:    _User_UserByMobile_Handler,
+		},
+		{
+			MethodName: "DirectoryRegister",
+			Handler:    _User_DirectoryRegister_Handler,
+		},
+		{
+			MethodName: "DirectoryChange",
+			Handler:    _User_DirectoryChange_Handler,
+		},
+		{
+			MethodName: "DirectoryList",
+			Handler:    _User_DirectoryList_Handler,
+		},
+		{
+			MethodName: "DirectoryDelete",
+			Handler:    _User_DirectoryDelete_Handler,
+		},
+		{
+			MethodName: "UserCraterDirectory",
+			Handler:    _User_UserCraterDirectory_Handler,
+		},
+		{
+			MethodName: "UserDeleteDirectory",
+			Handler:    _User_UserDeleteDirectory_Handler,
+		},
+		{
+			MethodName: "UserListDirectory",
+			Handler:    _User_UserListDirectory_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

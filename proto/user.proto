@@ -3,6 +3,7 @@ import "google/protobuf/empty.proto";
 option go_package = ".;proto";
 
 service User {
+  // 用户
   rpc UserRegister(UserInfoRegister) returns(google.protobuf.Empty); // 注册
   rpc UserResetPassword(UserInfoResetPassword) returns (UserInfo); // 重置密码
   rpc UserPurview(UserInfoPurview) returns (google.protobuf.Empty); // 权限管理
@@ -10,20 +11,48 @@ service User {
   rpc UserByID(UserInfoByID) returns(UserInfo); // 通过ID查询
   rpc UserByName(UserInfoByName) returns (UserInfo); // 通过名字查询
   rpc UserByMobile(UserInfoByMobile) returns (UserInfo); // 通过手机号查询
+
+  // 业务目录
+  rpc DirectoryRegister(DirectoryInfoRequest) returns (google.protobuf.Empty); //注册目录
+  rpc DirectoryChange(DirectoryInfoRequest) returns (google.protobuf.Empty); // 修改目录
+  rpc DirectoryList(google.protobuf.Empty) returns (DirectoryListResponse); // 查询所有目录
+  rpc DirectoryDelete(DirectoryDeleteID) returns (google.protobuf.Empty); // 通过目录ID删除目录
+
+  // 目录关联用户
+  rpc UserCraterDirectory(UserCraterDirectoryID) returns (google.protobuf.Empty); // 用户关联目录
+  rpc UserDeleteDirectory(UserCraterDirectoryID) returns (google.protobuf.Empty); // 用户删除目录
+  rpc UserListDirectory(UserListDirectoryID) returns (DirectoryListResponse); // 通过用户ID查询目录
+
+}
+message UserListDirectoryID{
+  uint32 userid = 1;
+}
+message UserCraterDirectoryID {
+  uint32 userid = 1;
+  uint32 directoryid = 2;
+}
+
+message DirectoryDeleteID {
+  uint32 id = 1;
+}
+message DirectoryListResponse {
+  uint32 total = 1;
+  repeated DirectoryInfoRequest data = 2;
+}
+message DirectoryInfoRequest {
+  string name = 2;
+  string icon = 3;
 }
 
 message UserInfoByMobile {
   string mobile = 1;
 }
-
 message UserInfoByName {
   string name = 1;
 }
-
 message UserInfoByID {
   uint32 id = 1;
 }
-
 message UserInfoRegister {
   uint32 id = 1;
   string name = 2;
@@ -31,27 +60,21 @@ message UserInfoRegister {
   string mobile = 4;
   uint32 position = 5; // 职位 1 代表未激活 职位 2 代表 运营  职位3 代理管理 0代表封禁
 }
-
 message UserInfoPurview {
   uint32 id = 1;
   uint32 position = 4; // 职位 1 代表未激活 职位 2 代表 运营  职位3 代理管理 0代表封禁
 }
-
 message UserInfoCheckResponse {
   bool success = 1;
 }
-
 message UserInfoCheckPassword {
   string Password = 1;
   string EncryptedPassword = 2;
 }
-
 message UserInfoResetPassword {
   uint32 id = 1;
   string NewPassword = 4;
 }
-
-
 message UserInfo {
   uint32 id = 1;
   string name = 2;
@@ -59,7 +82,6 @@ message UserInfo {
   string password = 4;
   uint32 position = 5; // 职位 1 代表未激活 职位 2 代表 运营  职位3 代理管理 0代表封禁
 }
-
 message UserInfoLogin {
   string name = 1;
   string mobile = 2;
