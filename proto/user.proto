@@ -13,37 +13,150 @@ service User {
   rpc UserByMobile(UserInfoByMobile) returns (UserInfo); // 通过手机号查询
 
   // 业务目录
-  rpc DirectoryRegister(DirectoryInfoRequest) returns (google.protobuf.Empty); //注册目录
-  rpc DirectoryChange(DirectoryInfoRequest) returns (google.protobuf.Empty); // 修改目录
-  rpc DirectoryList(google.protobuf.Empty) returns (DirectoryListResponse); // 查询所有目录
-  rpc DirectoryDelete(DirectoryDeleteID) returns (google.protobuf.Empty); // 通过目录ID删除目录
+  rpc DirectoryHomeRegister(DirectoryInfoRequest) returns (google.protobuf.Empty); //注册一级目录
+  rpc DirectoryHomeChange(DirectoryInfoRequest) returns (google.protobuf.Empty); // 修改一目录
+  rpc DirectoryHomeList(google.protobuf.Empty) returns (DirectoryListIDResponse); // 查询一级所有目录
+  rpc DirectoryHomeDelete(DirectoryDeleteID) returns (google.protobuf.Empty); // 通过一级目录ID删除目录
+
+  rpc DirectoryRegister(DirectoryInfoRequest) returns (google.protobuf.Empty); //注册二级目录
+  rpc DirectoryChange(DirectoryInfoRequest) returns (google.protobuf.Empty); // 修改二级目录
+  rpc DirectoryList(google.protobuf.Empty) returns (DirectoryListIDResponse); // 查询二级所有目录
+  rpc DirectoryDelete(DirectoryDeleteID) returns (google.protobuf.Empty); // 通过二级目录ID删除目录
 
   // 目录关联用户
-  rpc UserCraterDirectory(UserCraterDirectoryID) returns (google.protobuf.Empty); // 用户关联目录
-  rpc UserDeleteDirectory(UserCraterDirectoryID) returns (google.protobuf.Empty); // 用户删除目录
-  rpc UserListDirectory(UserListDirectoryID) returns (DirectoryListResponse); // 通过用户ID查询目录
+  rpc UserCraterHomeDirectory(UserCraterHomeDirectoryID) returns (google.protobuf.Empty); // 用户关联一级目录
+  rpc UserDeleteHomeDirectory(UserCraterHomeDirectoryID) returns (google.protobuf.Empty); // 用户关联一级删除目录
+  rpc UserCraterDirectory(UserCraterDirectoryID) returns (google.protobuf.Empty); // 用户关联二级目录
+  rpc UserDeleteDirectory(UserCraterDirectoryID) returns (google.protobuf.Empty); // 用户关联二级删除目录
+  rpc UserListHomeDirectory(UserListDirectoryID) returns (DirectoryListResponse); // 通过用户ID一级查询目录
+  // 用户首页卡片
+  rpc UserHomeParametersRegister(HomeParametersRequest) returns (google.protobuf.Empty); // 注册卡片
+  rpc UserHomeParametersById(HomeParametersUserId) returns(HomeParametersListResponse);// 查询卡片
+  rpc UserHomeParametersChange(HomeParametersResponse) returns (google.protobuf.Empty); //修改卡片
+  rpc UserHomeParametersDelete(HomeParametersId) returns (google.protobuf.Empty); // 删除卡片
+  rpc UserHomeParametersIsTab(HomeParametersId) returns(google.protobuf.Empty);// 禁用卡片
+  // 记录用户上传
+  rpc UserHomeUpdateLog(HomeUpdateLogRequest) returns (HomeUpdateLogListResponse); // 查询单个用户的
 
+  // 用户图片
+  rpc UserImageUpdate(ImageRequest) returns (google.protobuf.Empty); // 上传图片
+  rpc UserImageQueryId(ImageRequestId) returns (ImageListResponse); // 通过id查询分类
+  rpc UserImageQueryImageId(ImageRequestId) returns (ImageListResponse); // 通过图库id查询所有图片
+  rpc UserImageId(ImageRequestId) returns (google.protobuf.Empty); // 通过图片id删除图片
+  rpc UserImageNameId(ImageRequestId) returns (google.protobuf.Empty); // 通过图片分类删除所有图片 并且删除分类
+  rpc UserImageResetId(ImageRequest) returns (google.protobuf.Empty); // 重复名
+  rpc UserImageCreateName(ImageRequest) returns (ImageResponse); // 创建图片目录如果没一级目录就创建
+
+}
+
+//5
+
+message ImageListResponse {
+  uint32 Total = 1;
+  repeated ImageResponse data = 2;
+}
+message ImageResponse {
+  uint32 id = 1;
+  string name = 2;
+  string url = 3;
+  uint32 userid = 4;
+  uint32 Level = 5;
+}
+message ImageRequestId{
+  uint32 userid = 1;
+  uint32 page = 2;
+  uint32 count = 3;
+}
+message ImageRequest {
+  uint32 userid = 1;
+  uint32 id = 2; // 归属那个用户那个目录
+  string name = 3; // 名字 没有就用随机
+  string url = 4; // 路径
+}
+
+//4
+message HomeUpdateLogListResponse {
+  uint32 Total = 1;
+  repeated HomeUpdateLogResponse data = 2;
+}
+message HomeUpdateLogResponse{
+  uint32 Id = 1;
+  uint32 UserId = 2;
+  uint32 Amount = 3;
+  string Data = 4;
+}
+message HomeUpdateLogRequest {
+  uint32 UserId = 1;
+  string Query = 2;
+}
+//3
+message HomeParametersId {
+  uint32 Id = 1;
+}
+message HomeParametersListResponse {
+  uint32 Total = 1;
+  repeated HomeParametersResponse data = 2;
+}
+message HomeParametersUserId {
+  uint32 UserId = 1;
+}
+message HomeParametersResponse{
+  uint32 Id = 1;
+  string SubTitle = 2;
+  float SubValue = 3;
+  string Title = 4;
+  string Uint = 5;
+  string UintColor = 6;
+  string Value = 7;
+  uint32 UserId = 8;
+}
+message HomeParametersRequest {
+  uint32 UserId = 1;
+  string SubTitle = 2;
+  float SubValue = 3;
+  string Title = 4;
+  string Uint = 5;
+  string UintColor = 6;
+  string Value = 7;
+}
+
+//2
+message DirectoryListIDResponse {
+  uint32 Total = 1;
+  repeated DirectoryInfoRequest data = 2;
 }
 message UserListDirectoryID{
   uint32 userid = 1;
 }
 message UserCraterDirectoryID {
   uint32 userid = 1;
-  uint32 directoryid = 2;
+  uint32 homedirectoryid = 2;
+  uint32 directoryID = 3;
 }
-
+message UserCraterHomeDirectoryID {
+  uint32 userid = 1;
+  uint32 homedirectoryid = 2;
+}
 message DirectoryDeleteID {
   uint32 id = 1;
 }
 message DirectoryListResponse {
-  uint32 total = 1;
-  repeated DirectoryInfoRequest data = 2;
+  repeated Result Result = 1;
 }
 message DirectoryInfoRequest {
+  string path = 1;
   string name = 2;
   string icon = 3;
+  uint32 id = 4;
 }
-
+message Result {
+  string path = 1;
+  string name = 2;
+  string icon = 3;
+  bool isTab = 5;
+  repeated Result Result = 4;
+}
+// 1
 message UserInfoByMobile {
   string mobile = 1;
 }

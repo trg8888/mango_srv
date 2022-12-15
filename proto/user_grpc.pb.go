@@ -32,14 +32,36 @@ type UserClient interface {
 	UserByName(ctx context.Context, in *UserInfoByName, opts ...grpc.CallOption) (*UserInfo, error)
 	UserByMobile(ctx context.Context, in *UserInfoByMobile, opts ...grpc.CallOption) (*UserInfo, error)
 	// 业务目录
+	DirectoryHomeRegister(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	DirectoryHomeChange(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	DirectoryHomeList(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*DirectoryListIDResponse, error)
+	DirectoryHomeDelete(ctx context.Context, in *DirectoryDeleteID, opts ...grpc.CallOption) (*empty.Empty, error)
 	DirectoryRegister(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	DirectoryChange(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
-	DirectoryList(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*DirectoryListResponse, error)
+	DirectoryList(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*DirectoryListIDResponse, error)
 	DirectoryDelete(ctx context.Context, in *DirectoryDeleteID, opts ...grpc.CallOption) (*empty.Empty, error)
 	// 目录关联用户
+	UserCraterHomeDirectory(ctx context.Context, in *UserCraterHomeDirectoryID, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserDeleteHomeDirectory(ctx context.Context, in *UserCraterHomeDirectoryID, opts ...grpc.CallOption) (*empty.Empty, error)
 	UserCraterDirectory(ctx context.Context, in *UserCraterDirectoryID, opts ...grpc.CallOption) (*empty.Empty, error)
 	UserDeleteDirectory(ctx context.Context, in *UserCraterDirectoryID, opts ...grpc.CallOption) (*empty.Empty, error)
-	UserListDirectory(ctx context.Context, in *UserListDirectoryID, opts ...grpc.CallOption) (*DirectoryListResponse, error)
+	UserListHomeDirectory(ctx context.Context, in *UserListDirectoryID, opts ...grpc.CallOption) (*DirectoryListResponse, error)
+	// 用户首页卡片
+	UserHomeParametersRegister(ctx context.Context, in *HomeParametersRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserHomeParametersById(ctx context.Context, in *HomeParametersUserId, opts ...grpc.CallOption) (*HomeParametersListResponse, error)
+	UserHomeParametersChange(ctx context.Context, in *HomeParametersResponse, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserHomeParametersDelete(ctx context.Context, in *HomeParametersId, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserHomeParametersIsTab(ctx context.Context, in *HomeParametersId, opts ...grpc.CallOption) (*empty.Empty, error)
+	// 记录用户上传
+	UserHomeUpdateLog(ctx context.Context, in *HomeUpdateLogRequest, opts ...grpc.CallOption) (*HomeUpdateLogListResponse, error)
+	// 用户图片
+	UserImageUpdate(ctx context.Context, in *ImageRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserImageQueryId(ctx context.Context, in *ImageRequestId, opts ...grpc.CallOption) (*ImageListResponse, error)
+	UserImageQueryImageId(ctx context.Context, in *ImageRequestId, opts ...grpc.CallOption) (*ImageListResponse, error)
+	UserImageId(ctx context.Context, in *ImageRequestId, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserImageNameId(ctx context.Context, in *ImageRequestId, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserImageResetId(ctx context.Context, in *ImageRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	UserImageCreateName(ctx context.Context, in *ImageRequest, opts ...grpc.CallOption) (*ImageResponse, error)
 }
 
 type userClient struct {
@@ -113,6 +135,42 @@ func (c *userClient) UserByMobile(ctx context.Context, in *UserInfoByMobile, opt
 	return out, nil
 }
 
+func (c *userClient) DirectoryHomeRegister(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/DirectoryHomeRegister", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) DirectoryHomeChange(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/DirectoryHomeChange", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) DirectoryHomeList(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*DirectoryListIDResponse, error) {
+	out := new(DirectoryListIDResponse)
+	err := c.cc.Invoke(ctx, "/User/DirectoryHomeList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) DirectoryHomeDelete(ctx context.Context, in *DirectoryDeleteID, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/DirectoryHomeDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *userClient) DirectoryRegister(ctx context.Context, in *DirectoryInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/User/DirectoryRegister", in, out, opts...)
@@ -131,8 +189,8 @@ func (c *userClient) DirectoryChange(ctx context.Context, in *DirectoryInfoReque
 	return out, nil
 }
 
-func (c *userClient) DirectoryList(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*DirectoryListResponse, error) {
-	out := new(DirectoryListResponse)
+func (c *userClient) DirectoryList(ctx context.Context, in *empty.Empty, opts ...grpc.CallOption) (*DirectoryListIDResponse, error) {
+	out := new(DirectoryListIDResponse)
 	err := c.cc.Invoke(ctx, "/User/DirectoryList", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -143,6 +201,24 @@ func (c *userClient) DirectoryList(ctx context.Context, in *empty.Empty, opts ..
 func (c *userClient) DirectoryDelete(ctx context.Context, in *DirectoryDeleteID, opts ...grpc.CallOption) (*empty.Empty, error) {
 	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/User/DirectoryDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserCraterHomeDirectory(ctx context.Context, in *UserCraterHomeDirectoryID, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserCraterHomeDirectory", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserDeleteHomeDirectory(ctx context.Context, in *UserCraterHomeDirectoryID, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserDeleteHomeDirectory", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -167,9 +243,126 @@ func (c *userClient) UserDeleteDirectory(ctx context.Context, in *UserCraterDire
 	return out, nil
 }
 
-func (c *userClient) UserListDirectory(ctx context.Context, in *UserListDirectoryID, opts ...grpc.CallOption) (*DirectoryListResponse, error) {
+func (c *userClient) UserListHomeDirectory(ctx context.Context, in *UserListDirectoryID, opts ...grpc.CallOption) (*DirectoryListResponse, error) {
 	out := new(DirectoryListResponse)
-	err := c.cc.Invoke(ctx, "/User/UserListDirectory", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/User/UserListHomeDirectory", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserHomeParametersRegister(ctx context.Context, in *HomeParametersRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserHomeParametersRegister", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserHomeParametersById(ctx context.Context, in *HomeParametersUserId, opts ...grpc.CallOption) (*HomeParametersListResponse, error) {
+	out := new(HomeParametersListResponse)
+	err := c.cc.Invoke(ctx, "/User/UserHomeParametersById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserHomeParametersChange(ctx context.Context, in *HomeParametersResponse, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserHomeParametersChange", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserHomeParametersDelete(ctx context.Context, in *HomeParametersId, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserHomeParametersDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserHomeParametersIsTab(ctx context.Context, in *HomeParametersId, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserHomeParametersIsTab", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserHomeUpdateLog(ctx context.Context, in *HomeUpdateLogRequest, opts ...grpc.CallOption) (*HomeUpdateLogListResponse, error) {
+	out := new(HomeUpdateLogListResponse)
+	err := c.cc.Invoke(ctx, "/User/UserHomeUpdateLog", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserImageUpdate(ctx context.Context, in *ImageRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserImageUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserImageQueryId(ctx context.Context, in *ImageRequestId, opts ...grpc.CallOption) (*ImageListResponse, error) {
+	out := new(ImageListResponse)
+	err := c.cc.Invoke(ctx, "/User/UserImageQueryId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserImageQueryImageId(ctx context.Context, in *ImageRequestId, opts ...grpc.CallOption) (*ImageListResponse, error) {
+	out := new(ImageListResponse)
+	err := c.cc.Invoke(ctx, "/User/UserImageQueryImageId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserImageId(ctx context.Context, in *ImageRequestId, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserImageId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserImageNameId(ctx context.Context, in *ImageRequestId, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserImageNameId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserImageResetId(ctx context.Context, in *ImageRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/UserImageResetId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) UserImageCreateName(ctx context.Context, in *ImageRequest, opts ...grpc.CallOption) (*ImageResponse, error) {
+	out := new(ImageResponse)
+	err := c.cc.Invoke(ctx, "/User/UserImageCreateName", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -189,14 +382,36 @@ type UserServer interface {
 	UserByName(context.Context, *UserInfoByName) (*UserInfo, error)
 	UserByMobile(context.Context, *UserInfoByMobile) (*UserInfo, error)
 	// 业务目录
+	DirectoryHomeRegister(context.Context, *DirectoryInfoRequest) (*empty.Empty, error)
+	DirectoryHomeChange(context.Context, *DirectoryInfoRequest) (*empty.Empty, error)
+	DirectoryHomeList(context.Context, *empty.Empty) (*DirectoryListIDResponse, error)
+	DirectoryHomeDelete(context.Context, *DirectoryDeleteID) (*empty.Empty, error)
 	DirectoryRegister(context.Context, *DirectoryInfoRequest) (*empty.Empty, error)
 	DirectoryChange(context.Context, *DirectoryInfoRequest) (*empty.Empty, error)
-	DirectoryList(context.Context, *empty.Empty) (*DirectoryListResponse, error)
+	DirectoryList(context.Context, *empty.Empty) (*DirectoryListIDResponse, error)
 	DirectoryDelete(context.Context, *DirectoryDeleteID) (*empty.Empty, error)
 	// 目录关联用户
+	UserCraterHomeDirectory(context.Context, *UserCraterHomeDirectoryID) (*empty.Empty, error)
+	UserDeleteHomeDirectory(context.Context, *UserCraterHomeDirectoryID) (*empty.Empty, error)
 	UserCraterDirectory(context.Context, *UserCraterDirectoryID) (*empty.Empty, error)
 	UserDeleteDirectory(context.Context, *UserCraterDirectoryID) (*empty.Empty, error)
-	UserListDirectory(context.Context, *UserListDirectoryID) (*DirectoryListResponse, error)
+	UserListHomeDirectory(context.Context, *UserListDirectoryID) (*DirectoryListResponse, error)
+	// 用户首页卡片
+	UserHomeParametersRegister(context.Context, *HomeParametersRequest) (*empty.Empty, error)
+	UserHomeParametersById(context.Context, *HomeParametersUserId) (*HomeParametersListResponse, error)
+	UserHomeParametersChange(context.Context, *HomeParametersResponse) (*empty.Empty, error)
+	UserHomeParametersDelete(context.Context, *HomeParametersId) (*empty.Empty, error)
+	UserHomeParametersIsTab(context.Context, *HomeParametersId) (*empty.Empty, error)
+	// 记录用户上传
+	UserHomeUpdateLog(context.Context, *HomeUpdateLogRequest) (*HomeUpdateLogListResponse, error)
+	// 用户图片
+	UserImageUpdate(context.Context, *ImageRequest) (*empty.Empty, error)
+	UserImageQueryId(context.Context, *ImageRequestId) (*ImageListResponse, error)
+	UserImageQueryImageId(context.Context, *ImageRequestId) (*ImageListResponse, error)
+	UserImageId(context.Context, *ImageRequestId) (*empty.Empty, error)
+	UserImageNameId(context.Context, *ImageRequestId) (*empty.Empty, error)
+	UserImageResetId(context.Context, *ImageRequest) (*empty.Empty, error)
+	UserImageCreateName(context.Context, *ImageRequest) (*ImageResponse, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -225,17 +440,35 @@ func (UnimplementedUserServer) UserByName(context.Context, *UserInfoByName) (*Us
 func (UnimplementedUserServer) UserByMobile(context.Context, *UserInfoByMobile) (*UserInfo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserByMobile not implemented")
 }
+func (UnimplementedUserServer) DirectoryHomeRegister(context.Context, *DirectoryInfoRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectoryHomeRegister not implemented")
+}
+func (UnimplementedUserServer) DirectoryHomeChange(context.Context, *DirectoryInfoRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectoryHomeChange not implemented")
+}
+func (UnimplementedUserServer) DirectoryHomeList(context.Context, *empty.Empty) (*DirectoryListIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectoryHomeList not implemented")
+}
+func (UnimplementedUserServer) DirectoryHomeDelete(context.Context, *DirectoryDeleteID) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DirectoryHomeDelete not implemented")
+}
 func (UnimplementedUserServer) DirectoryRegister(context.Context, *DirectoryInfoRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DirectoryRegister not implemented")
 }
 func (UnimplementedUserServer) DirectoryChange(context.Context, *DirectoryInfoRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DirectoryChange not implemented")
 }
-func (UnimplementedUserServer) DirectoryList(context.Context, *empty.Empty) (*DirectoryListResponse, error) {
+func (UnimplementedUserServer) DirectoryList(context.Context, *empty.Empty) (*DirectoryListIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DirectoryList not implemented")
 }
 func (UnimplementedUserServer) DirectoryDelete(context.Context, *DirectoryDeleteID) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DirectoryDelete not implemented")
+}
+func (UnimplementedUserServer) UserCraterHomeDirectory(context.Context, *UserCraterHomeDirectoryID) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserCraterHomeDirectory not implemented")
+}
+func (UnimplementedUserServer) UserDeleteHomeDirectory(context.Context, *UserCraterHomeDirectoryID) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserDeleteHomeDirectory not implemented")
 }
 func (UnimplementedUserServer) UserCraterDirectory(context.Context, *UserCraterDirectoryID) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserCraterDirectory not implemented")
@@ -243,8 +476,47 @@ func (UnimplementedUserServer) UserCraterDirectory(context.Context, *UserCraterD
 func (UnimplementedUserServer) UserDeleteDirectory(context.Context, *UserCraterDirectoryID) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserDeleteDirectory not implemented")
 }
-func (UnimplementedUserServer) UserListDirectory(context.Context, *UserListDirectoryID) (*DirectoryListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UserListDirectory not implemented")
+func (UnimplementedUserServer) UserListHomeDirectory(context.Context, *UserListDirectoryID) (*DirectoryListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserListHomeDirectory not implemented")
+}
+func (UnimplementedUserServer) UserHomeParametersRegister(context.Context, *HomeParametersRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserHomeParametersRegister not implemented")
+}
+func (UnimplementedUserServer) UserHomeParametersById(context.Context, *HomeParametersUserId) (*HomeParametersListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserHomeParametersById not implemented")
+}
+func (UnimplementedUserServer) UserHomeParametersChange(context.Context, *HomeParametersResponse) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserHomeParametersChange not implemented")
+}
+func (UnimplementedUserServer) UserHomeParametersDelete(context.Context, *HomeParametersId) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserHomeParametersDelete not implemented")
+}
+func (UnimplementedUserServer) UserHomeParametersIsTab(context.Context, *HomeParametersId) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserHomeParametersIsTab not implemented")
+}
+func (UnimplementedUserServer) UserHomeUpdateLog(context.Context, *HomeUpdateLogRequest) (*HomeUpdateLogListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserHomeUpdateLog not implemented")
+}
+func (UnimplementedUserServer) UserImageUpdate(context.Context, *ImageRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserImageUpdate not implemented")
+}
+func (UnimplementedUserServer) UserImageQueryId(context.Context, *ImageRequestId) (*ImageListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserImageQueryId not implemented")
+}
+func (UnimplementedUserServer) UserImageQueryImageId(context.Context, *ImageRequestId) (*ImageListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserImageQueryImageId not implemented")
+}
+func (UnimplementedUserServer) UserImageId(context.Context, *ImageRequestId) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserImageId not implemented")
+}
+func (UnimplementedUserServer) UserImageNameId(context.Context, *ImageRequestId) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserImageNameId not implemented")
+}
+func (UnimplementedUserServer) UserImageResetId(context.Context, *ImageRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserImageResetId not implemented")
+}
+func (UnimplementedUserServer) UserImageCreateName(context.Context, *ImageRequest) (*ImageResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UserImageCreateName not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -385,6 +657,78 @@ func _User_UserByMobile_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_DirectoryHomeRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectoryInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).DirectoryHomeRegister(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/DirectoryHomeRegister",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).DirectoryHomeRegister(ctx, req.(*DirectoryInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_DirectoryHomeChange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectoryInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).DirectoryHomeChange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/DirectoryHomeChange",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).DirectoryHomeChange(ctx, req.(*DirectoryInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_DirectoryHomeList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(empty.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).DirectoryHomeList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/DirectoryHomeList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).DirectoryHomeList(ctx, req.(*empty.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_DirectoryHomeDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DirectoryDeleteID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).DirectoryHomeDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/DirectoryHomeDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).DirectoryHomeDelete(ctx, req.(*DirectoryDeleteID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _User_DirectoryRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DirectoryInfoRequest)
 	if err := dec(in); err != nil {
@@ -457,6 +801,42 @@ func _User_DirectoryDelete_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UserCraterHomeDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserCraterHomeDirectoryID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserCraterHomeDirectory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserCraterHomeDirectory",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserCraterHomeDirectory(ctx, req.(*UserCraterHomeDirectoryID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserDeleteHomeDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserCraterHomeDirectoryID)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserDeleteHomeDirectory(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserDeleteHomeDirectory",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserDeleteHomeDirectory(ctx, req.(*UserCraterHomeDirectoryID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _User_UserCraterDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserCraterDirectoryID)
 	if err := dec(in); err != nil {
@@ -493,20 +873,254 @@ func _User_UserDeleteDirectory_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_UserListDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _User_UserListHomeDirectory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UserListDirectoryID)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServer).UserListDirectory(ctx, in)
+		return srv.(UserServer).UserListHomeDirectory(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/User/UserListDirectory",
+		FullMethod: "/User/UserListHomeDirectory",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).UserListDirectory(ctx, req.(*UserListDirectoryID))
+		return srv.(UserServer).UserListHomeDirectory(ctx, req.(*UserListDirectoryID))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserHomeParametersRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HomeParametersRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserHomeParametersRegister(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserHomeParametersRegister",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserHomeParametersRegister(ctx, req.(*HomeParametersRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserHomeParametersById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HomeParametersUserId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserHomeParametersById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserHomeParametersById",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserHomeParametersById(ctx, req.(*HomeParametersUserId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserHomeParametersChange_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HomeParametersResponse)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserHomeParametersChange(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserHomeParametersChange",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserHomeParametersChange(ctx, req.(*HomeParametersResponse))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserHomeParametersDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HomeParametersId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserHomeParametersDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserHomeParametersDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserHomeParametersDelete(ctx, req.(*HomeParametersId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserHomeParametersIsTab_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HomeParametersId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserHomeParametersIsTab(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserHomeParametersIsTab",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserHomeParametersIsTab(ctx, req.(*HomeParametersId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserHomeUpdateLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HomeUpdateLogRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserHomeUpdateLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserHomeUpdateLog",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserHomeUpdateLog(ctx, req.(*HomeUpdateLogRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserImageUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserImageUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserImageUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserImageUpdate(ctx, req.(*ImageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserImageQueryId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImageRequestId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserImageQueryId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserImageQueryId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserImageQueryId(ctx, req.(*ImageRequestId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserImageQueryImageId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImageRequestId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserImageQueryImageId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserImageQueryImageId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserImageQueryImageId(ctx, req.(*ImageRequestId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserImageId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImageRequestId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserImageId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserImageId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserImageId(ctx, req.(*ImageRequestId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserImageNameId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImageRequestId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserImageNameId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserImageNameId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserImageNameId(ctx, req.(*ImageRequestId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserImageResetId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserImageResetId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserImageResetId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserImageResetId(ctx, req.(*ImageRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_UserImageCreateName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImageRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UserImageCreateName(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/UserImageCreateName",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UserImageCreateName(ctx, req.(*ImageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -547,6 +1161,22 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_UserByMobile_Handler,
 		},
 		{
+			MethodName: "DirectoryHomeRegister",
+			Handler:    _User_DirectoryHomeRegister_Handler,
+		},
+		{
+			MethodName: "DirectoryHomeChange",
+			Handler:    _User_DirectoryHomeChange_Handler,
+		},
+		{
+			MethodName: "DirectoryHomeList",
+			Handler:    _User_DirectoryHomeList_Handler,
+		},
+		{
+			MethodName: "DirectoryHomeDelete",
+			Handler:    _User_DirectoryHomeDelete_Handler,
+		},
+		{
 			MethodName: "DirectoryRegister",
 			Handler:    _User_DirectoryRegister_Handler,
 		},
@@ -563,6 +1193,14 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_DirectoryDelete_Handler,
 		},
 		{
+			MethodName: "UserCraterHomeDirectory",
+			Handler:    _User_UserCraterHomeDirectory_Handler,
+		},
+		{
+			MethodName: "UserDeleteHomeDirectory",
+			Handler:    _User_UserDeleteHomeDirectory_Handler,
+		},
+		{
 			MethodName: "UserCraterDirectory",
 			Handler:    _User_UserCraterDirectory_Handler,
 		},
@@ -571,8 +1209,60 @@ var User_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _User_UserDeleteDirectory_Handler,
 		},
 		{
-			MethodName: "UserListDirectory",
-			Handler:    _User_UserListDirectory_Handler,
+			MethodName: "UserListHomeDirectory",
+			Handler:    _User_UserListHomeDirectory_Handler,
+		},
+		{
+			MethodName: "UserHomeParametersRegister",
+			Handler:    _User_UserHomeParametersRegister_Handler,
+		},
+		{
+			MethodName: "UserHomeParametersById",
+			Handler:    _User_UserHomeParametersById_Handler,
+		},
+		{
+			MethodName: "UserHomeParametersChange",
+			Handler:    _User_UserHomeParametersChange_Handler,
+		},
+		{
+			MethodName: "UserHomeParametersDelete",
+			Handler:    _User_UserHomeParametersDelete_Handler,
+		},
+		{
+			MethodName: "UserHomeParametersIsTab",
+			Handler:    _User_UserHomeParametersIsTab_Handler,
+		},
+		{
+			MethodName: "UserHomeUpdateLog",
+			Handler:    _User_UserHomeUpdateLog_Handler,
+		},
+		{
+			MethodName: "UserImageUpdate",
+			Handler:    _User_UserImageUpdate_Handler,
+		},
+		{
+			MethodName: "UserImageQueryId",
+			Handler:    _User_UserImageQueryId_Handler,
+		},
+		{
+			MethodName: "UserImageQueryImageId",
+			Handler:    _User_UserImageQueryImageId_Handler,
+		},
+		{
+			MethodName: "UserImageId",
+			Handler:    _User_UserImageId_Handler,
+		},
+		{
+			MethodName: "UserImageNameId",
+			Handler:    _User_UserImageNameId_Handler,
+		},
+		{
+			MethodName: "UserImageResetId",
+			Handler:    _User_UserImageResetId_Handler,
+		},
+		{
+			MethodName: "UserImageCreateName",
+			Handler:    _User_UserImageCreateName_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
