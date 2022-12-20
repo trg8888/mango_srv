@@ -4,7 +4,7 @@ type Image struct {
 	BaseModel
 	Name     string `gorm:"type:varchar(200)"`
 	URL      string `gorm:"type:varchar(200)"` // 图床链接
-	UserID   int32  `gorm:"type:int;not null,unique,index"`
+	UserID   int32  `gorm:"type:int;not null,index"`
 	User     User
 	ImageID  int32    `json:"image"`
 	Image    *Image   `json:"-"`

@@ -14,21 +14,22 @@ import (
 func (u *UserServer) UserImageUpdate(ctx context.Context, req *proto.ImageRequest) (*empty.Empty, error) {
 
 	var image model.Image
-	result := global.DB.Where(&model.Image{Level: 2}).First(&image, req.Id)
+	result := global.DB.Where(&model.Image{Level: 2}).First(&image, req.Userid)
 	if result.RowsAffected == 0 {
 		return nil, status.Errorf(codes.NotFound, "目录不存在")
 	}
 
-	if uint32(image.UserID) != req.Userid {
+	if uint32(image.ID) != req.Userid {
 		return nil, status.Errorf(codes.PermissionDenied, "用户跟图片归属不一致")
 	}
 	if image.Level != 2 {
 		return nil, status.Errorf(codes.Aborted, "图片层级错误")
 	}
 	var newimage model.Image
-	newimage.UserID = image.UserID
+	newimage.ImageID = int32(req.Userid)
 	newimage.Level = 3
 	newimage.Name = req.Name
+	newimage.UserID = int32(req.Id)
 	newimage.URL = req.Url
 
 	if result := global.DB.Create(&newimage); result.Error != nil {
@@ -40,12 +41,12 @@ func (u *UserServer) UserImageUpdate(ctx context.Context, req *proto.ImageReques
 
 func (u *UserServer) UserImageCreateName(ctx context.Context, req *proto.ImageRequest) (*proto.ImageResponse, error) {
 	var image model.Image
-	result := global.DB.Where(&model.Image{Level: 1}).First(&image, req.Id)
+	result := global.DB.Where(&model.Image{Level: 1, UserID: int32(req.Userid)}).First(&image)
 	if result.RowsAffected == 0 {
 		image.UserID = int32(req.Userid)
 		image.Name = fmt.Sprintf("%d", req.Userid)
 		image.Level = 1
-		global.DB.Create(&image)
+		global.DB.Omit("ImageID").Create(&image)
 	}
 	var createimage model.Image
 	createimage.Name = req.Name
@@ -75,6 +76,9 @@ func (u *UserServer) UserImageQueryId(ctx context.Context, req *proto.ImageReque
 		return nil, res.Error
 	}
 
+	var total int64
+	global.DB.Model(&model.Image{}).Where(&model.Image{Level: 2, UserID: int32(req.Userid)}).Count(&total)
+
 	var ImageListResponse []*proto.ImageResponse
 
 	for _, value := range image {
@@ -87,7 +91,7 @@ func (u *UserServer) UserImageQueryId(ctx context.Context, req *proto.ImageReque
 	}
 
 	return &proto.ImageListResponse{
-		Total: uint32(len(ImageListResponse)),
+		Total: uint32(total),
 		Data:  ImageListResponse,
 	}, nil
 }
@@ -101,7 +105,7 @@ func (u *UserServer) UserImageQueryImageId(ctx context.Context, req *proto.Image
 	}
 
 	var image []model.Image
-	res := global.DB.Where(&model.Image{Level: 2, ImageID: category.ID}).Scopes(model.Paginate(int(req.Page), int(req.Count))).Find(&image)
+	res := global.DB.Where(&model.Image{Level: 3, ImageID: category.ID}).Scopes(model.Paginate(int(req.Page), int(req.Count))).Find(&image)
 	if res.Error != nil {
 		return nil, res.Error
 	}
@@ -118,8 +122,11 @@ func (u *UserServer) UserImageQueryImageId(ctx context.Context, req *proto.Image
 		})
 	}
 
+	var total int64
+	global.DB.Model(&model.Image{}).Where(&model.Image{Level: 3, ImageID: category.ID}).Count(&total)
+
 	return &proto.ImageListResponse{
-		Total: uint32(len(ImageListResponse)),
+		Total: uint32(total),
 		Data:  ImageListResponse,
 	}, nil
 
@@ -145,7 +152,8 @@ func (u *UserServer) UserImageNameId(ctx context.Context, req *proto.ImageReques
 	}
 	var comments []model.Image
 	global.DB.Where(&model.Image{Level: 3, ImageID: int32(req.Userid)}).Find(&comments)
-	global.DB.Delete(&comments, &category)
+	global.DB.Delete(&comments)
+	global.DB.Delete(&category)
 
 	return &empty.Empty{}, nil
 
@@ -156,7 +164,6 @@ func (u *UserServer) UserImageResetId(ctx context.Context, req *proto.ImageReque
 	if res := global.DB.First(&category, req.Id); res.RowsAffected == 0 {
 		return nil, status.Errorf(codes.NotFound, "未找到")
 	}
-
 	category.Name = req.Name
 	if result := global.DB.Save(&category); result.Error != nil {
 		return nil, status.Errorf(codes.Unknown, result.Error.Error())

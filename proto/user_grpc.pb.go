@@ -62,6 +62,12 @@ type UserClient interface {
 	UserImageNameId(ctx context.Context, in *ImageRequestId, opts ...grpc.CallOption) (*empty.Empty, error)
 	UserImageResetId(ctx context.Context, in *ImageRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 	UserImageCreateName(ctx context.Context, in *ImageRequest, opts ...grpc.CallOption) (*ImageResponse, error)
+	// 公告增删改查
+	AdminNoticeCreate(ctx context.Context, in *NoticeInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	AdminNoticeUpdate(ctx context.Context, in *NoticeInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	AdminNoticeDelete(ctx context.Context, in *NoticeInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+	AdminNoticeQueryId(ctx context.Context, in *NoticeInfoRequestId, opts ...grpc.CallOption) (*NoticeInfoResponse, error)
+	AdminNoticeQueryList(ctx context.Context, in *NoticeInfoRequestList, opts ...grpc.CallOption) (*NoticeInfoResponseList, error)
 }
 
 type userClient struct {
@@ -369,6 +375,51 @@ func (c *userClient) UserImageCreateName(ctx context.Context, in *ImageRequest, 
 	return out, nil
 }
 
+func (c *userClient) AdminNoticeCreate(ctx context.Context, in *NoticeInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/AdminNoticeCreate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) AdminNoticeUpdate(ctx context.Context, in *NoticeInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/AdminNoticeUpdate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) AdminNoticeDelete(ctx context.Context, in *NoticeInfoRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/User/AdminNoticeDelete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) AdminNoticeQueryId(ctx context.Context, in *NoticeInfoRequestId, opts ...grpc.CallOption) (*NoticeInfoResponse, error) {
+	out := new(NoticeInfoResponse)
+	err := c.cc.Invoke(ctx, "/User/AdminNoticeQueryId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userClient) AdminNoticeQueryList(ctx context.Context, in *NoticeInfoRequestList, opts ...grpc.CallOption) (*NoticeInfoResponseList, error) {
+	out := new(NoticeInfoResponseList)
+	err := c.cc.Invoke(ctx, "/User/AdminNoticeQueryList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -412,6 +463,12 @@ type UserServer interface {
 	UserImageNameId(context.Context, *ImageRequestId) (*empty.Empty, error)
 	UserImageResetId(context.Context, *ImageRequest) (*empty.Empty, error)
 	UserImageCreateName(context.Context, *ImageRequest) (*ImageResponse, error)
+	// 公告增删改查
+	AdminNoticeCreate(context.Context, *NoticeInfoRequest) (*empty.Empty, error)
+	AdminNoticeUpdate(context.Context, *NoticeInfoRequest) (*empty.Empty, error)
+	AdminNoticeDelete(context.Context, *NoticeInfoRequest) (*empty.Empty, error)
+	AdminNoticeQueryId(context.Context, *NoticeInfoRequestId) (*NoticeInfoResponse, error)
+	AdminNoticeQueryList(context.Context, *NoticeInfoRequestList) (*NoticeInfoResponseList, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -517,6 +574,21 @@ func (UnimplementedUserServer) UserImageResetId(context.Context, *ImageRequest) 
 }
 func (UnimplementedUserServer) UserImageCreateName(context.Context, *ImageRequest) (*ImageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UserImageCreateName not implemented")
+}
+func (UnimplementedUserServer) AdminNoticeCreate(context.Context, *NoticeInfoRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminNoticeCreate not implemented")
+}
+func (UnimplementedUserServer) AdminNoticeUpdate(context.Context, *NoticeInfoRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminNoticeUpdate not implemented")
+}
+func (UnimplementedUserServer) AdminNoticeDelete(context.Context, *NoticeInfoRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminNoticeDelete not implemented")
+}
+func (UnimplementedUserServer) AdminNoticeQueryId(context.Context, *NoticeInfoRequestId) (*NoticeInfoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminNoticeQueryId not implemented")
+}
+func (UnimplementedUserServer) AdminNoticeQueryList(context.Context, *NoticeInfoRequestList) (*NoticeInfoResponseList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AdminNoticeQueryList not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -1125,6 +1197,96 @@ func _User_UserImageCreateName_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_AdminNoticeCreate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoticeInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).AdminNoticeCreate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/AdminNoticeCreate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).AdminNoticeCreate(ctx, req.(*NoticeInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_AdminNoticeUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoticeInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).AdminNoticeUpdate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/AdminNoticeUpdate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).AdminNoticeUpdate(ctx, req.(*NoticeInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_AdminNoticeDelete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoticeInfoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).AdminNoticeDelete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/AdminNoticeDelete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).AdminNoticeDelete(ctx, req.(*NoticeInfoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_AdminNoticeQueryId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoticeInfoRequestId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).AdminNoticeQueryId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/AdminNoticeQueryId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).AdminNoticeQueryId(ctx, req.(*NoticeInfoRequestId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _User_AdminNoticeQueryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoticeInfoRequestList)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).AdminNoticeQueryList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/User/AdminNoticeQueryList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).AdminNoticeQueryList(ctx, req.(*NoticeInfoRequestList))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1263,6 +1425,26 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UserImageCreateName",
 			Handler:    _User_UserImageCreateName_Handler,
+		},
+		{
+			MethodName: "AdminNoticeCreate",
+			Handler:    _User_AdminNoticeCreate_Handler,
+		},
+		{
+			MethodName: "AdminNoticeUpdate",
+			Handler:    _User_AdminNoticeUpdate_Handler,
+		},
+		{
+			MethodName: "AdminNoticeDelete",
+			Handler:    _User_AdminNoticeDelete_Handler,
+		},
+		{
+			MethodName: "AdminNoticeQueryId",
+			Handler:    _User_AdminNoticeQueryId_Handler,
+		},
+		{
+			MethodName: "AdminNoticeQueryList",
+			Handler:    _User_AdminNoticeQueryList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

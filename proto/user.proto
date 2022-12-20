@@ -47,10 +47,42 @@ service User {
   rpc UserImageResetId(ImageRequest) returns (google.protobuf.Empty); // 重复名
   rpc UserImageCreateName(ImageRequest) returns (ImageResponse); // 创建图片目录如果没一级目录就创建
 
+  // 公告增删改查
+  rpc AdminNoticeCreate(NoticeInfoRequest) returns (google.protobuf.Empty); // 创建
+  rpc AdminNoticeUpdate(NoticeInfoRequest) returns (google.protobuf.Empty); // 修改
+  rpc AdminNoticeDelete(NoticeInfoRequest) returns (google.protobuf.Empty); // 删除
+  rpc AdminNoticeQueryId(NoticeInfoRequestId) returns (NoticeInfoResponse); // 单个查询
+  rpc AdminNoticeQueryList(NoticeInfoRequestList) returns (NoticeInfoResponseList); // 分类查询
+
+
+
 }
 
-//5
+message NoticeInfoResponseList {
+  uint32 Total = 1;
+  repeated NoticeInfoResponse data = 2;
+}
+message NoticeInfoRequestList {
+  uint32 page = 1;
+  uint32 count = 2;
+}
+message NoticeInfoRequestId {
+  uint32 id = 1;
+}
+message NoticeInfoResponse {
+    uint32 id = 1;
+    string title = 2;
+    string describe = 3;
+    string time = 4;
+}
+message NoticeInfoRequest {
+    uint32 id = 3;
+    string title = 1;
+    string describe = 2;
+}
 
+
+//5
 message ImageListResponse {
   uint32 Total = 1;
   repeated ImageResponse data = 2;
